@@ -7,7 +7,7 @@ WITH activity_event_counts AS (
 	                   , SUM(CASE WHEN event_name = 'reactivated' THEN 1 ELSE 0 END) AS reactivated
 	                   , SUM(CASE WHEN event_name = 'deactivated' THEN 1 ELSE 0 END) AS deactivated
 	                   , SUM(CASE WHEN event_name = 'signed_up' THEN 1 ELSE 0 END) AS sign_ups
-	                FROM `gc-data-infrastructure-7e07.materialized_views.vw_activity_events`
+	                FROM `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_activity_events`
 	            GROUP BY kpi_day
 	                   , organisation_id
 
@@ -15,7 +15,7 @@ WITH activity_event_counts AS (
 	        ), daily_states AS (
 
 
-	              SELECT * FROM `gc-data-infrastructure-7e07.materialized_views.vw_kpi_daily_states`
+	              SELECT * FROM `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_kpi_daily_states`
 
 
 	              UNION ALL
@@ -23,9 +23,9 @@ WITH activity_event_counts AS (
 	                   , salesforce.organisation_id
 	                   , 'preactive' AS to_state
 	                   , first_activated.created_at first_activated_At
-	                FROM `gc-data-infrastructure-7e07.materialized_views.vw_salesforce_growth_kpi_prep` salesforce
-	                LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_kpi_daily_states` daily_states USING(organisation_id, kpi_day)
-	                LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_activity_events` first_activated
+	                FROM `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_salesforce_growth_kpi_prep` salesforce
+	                LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_kpi_daily_states` daily_states USING(organisation_id, kpi_day)
+	                LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_activity_events` first_activated
 	                          ON first_activated.organisation_id = salesforce.organisation_id
 	                          AND event_name = 'activated'
 	               WHERE daily_states.kpi_day IS NULL
@@ -36,8 +36,8 @@ WITH activity_event_counts AS (
 	                   , salesforce.organisation_id
 	                   , 'preactive' AS to_state
 	                   , NULL AS first_activated_At
-	                FROM `gc-data-infrastructure-7e07.materialized_views.vw_salesforce_growth_kpi_prep` salesforce
-	                LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_kpi_daily_states` daily_states USING(organisation_id)
+	                FROM `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_salesforce_growth_kpi_prep` salesforce
+	                LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_kpi_daily_states` daily_states USING(organisation_id)
 	               WHERE daily_states.organisation_id IS NULL
 	                 AND salesforce.kpi_day IS NOT NULL
 
@@ -172,17 +172,17 @@ WITH activity_event_counts AS (
 
 
 	          FROM daily_states
-	               LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_organisations` organisations USING (organisation_id)
+	               LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_organisations` organisations USING (organisation_id)
 	               LEFT JOIN activity_event_counts USING (organisation_id, kpi_day)
-	               LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_kpi_mandates_prep` mandates_prep
+	               LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_kpi_mandates_prep` mandates_prep
 	                         USING (organisation_id, kpi_day)
 
-                 LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_kpi_payment_prep` payment_prep
+                 LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_kpi_payment_prep` payment_prep
 	                         USING (organisation_id, kpi_day)
 
-	               LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_kpi_revenue_prep` revenue_prep
+	               LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_kpi_revenue_prep` revenue_prep
 	                         USING (organisation_id, kpi_day)
-	               LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_salesforce_growth_kpi_prep` salesforce
+	               LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_salesforce_growth_kpi_prep` salesforce
 	                         USING (organisation_id, kpi_day)
                  LEFT JOIN  `gc-data-infrastructure-7e07.experimental_tables.App_Name_Remap_Lookup`  remap
                            ON  organisations.signup_app_name= remap.SourceVal
@@ -232,7 +232,7 @@ WITH activity_event_counts AS (
 	            FROM
               data_prep
               LEFT JOIN
-              `gc-data-infrastructure-7e07.experimental_tables.App_Name_PSM_Lookup`  psm
+              `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.App_Name_PSM_Lookup`  psm
                ON
                data_prep.signup_app_name = psm.app_name
 
