@@ -224,7 +224,7 @@ WITH activity_event_counts AS (
 	               , timestamp_diff(first_activated_at, opportunity_created_date, day)                               AS opportunity_to_active_days
 	               , timestamp_diff(first_activated_at, opportunity_created_date, hour)                              AS opportunity_to_active_hours
                  , CASE WHEN psm.PartnerShipSuccessManager IS NULL
-                            THEN 'Matt'
+                            THEN 'Unallocated'
                         ELSE psm.PartnerShipSuccessManager
                    END                                                                                             AS PartnerShipSuccessManager
 
