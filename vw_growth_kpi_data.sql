@@ -184,8 +184,8 @@ WITH activity_event_counts AS (
 	                         USING (organisation_id, kpi_day)
 	               LEFT JOIN `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_salesforce_growth_kpi_prep` salesforce
 	                         USING (organisation_id, kpi_day)
-                 LEFT JOIN  `gc-data-infrastructure-7e07.experimental_tables.App_Name_Remap_Lookup`  remap
-                           ON  organisations.signup_app_name= remap.SourceVal
+                 LEFT JOIN  `gc-data-infrastructure-7e07.experimental_tables.App_Name_Remap_Lookup`  remap -- AKA PArtnerName Rollup in Tableau
+                           ON  organisations.signup_app_name= RTRIM(remap.SourceVal) -- seem to ahve some trailing spaces in the googlesheets imported data
 	        )
 
 , Final as (
