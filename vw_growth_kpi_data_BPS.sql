@@ -43,7 +43,7 @@ UNION DISTINCT
 
 
 SELECT
-  DISTINCT
+DISTINCT
   parent.* EXCEPT (mandates_created, scheme, mandateSchemeFix, active, inactive, activated, monthly_fee_active)
 , parent.mandates_created
 , parent.scheme
@@ -63,7 +63,6 @@ LEFT JOIN
       kpi_day
     , organisation_id
     FROM
-
     `gc-data-infrastructure-7e07.experimental_tables.vw_growth_kpi_data_by_partner_prep`
     WHERE
     MandateSchemeFix = 1
@@ -82,7 +81,7 @@ fix.organisation_id IS NULL
 )
 
 , psm AS
-                    (SELECT
+                    ( SELECT
                       data_prep.*
                       , CASE WHEN psm.PartnerShipSuccessManager IS NULL
                             THEN 'unallocated'
