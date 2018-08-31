@@ -15,7 +15,7 @@ SELECT
 , CASE WHEN parent.DoubleCount_Fix=1 THEN parent.inactive                                     ELSE 0  END AS inactive
 , CASE WHEN parent.DoubleCount_Fix=1 THEN parent.activated                                    ELSE 0  END AS activated
 , CASE WHEN parent.DoubleCount_Fix=1 THEN parent.monthly_fee_active                           ELSE 0  END AS monthly_fee_active
-, CASE WHEN parent.DoubleCount_Fix=1 THEN parent.paid_amount                                  ELSE 0  END AS paid_amount
+--, CASE WHEN parent.DoubleCount_Fix=1 THEN parent.paid_amount                                  ELSE 0  END AS paid_amount
 
 FROM
 `gc-data-infrastructure-7e07.experimental_tables.vw_growth_kpi_data_by_partner_prep` fix
