@@ -5,7 +5,7 @@
 WITH data_prep AS
 
 (
-SELECT
+ SELECT
   DISTINCT
   parent.* EXCEPT (mandates_created, scheme, mandateSchemeFix, active, inactive, activated, monthly_fee_active)
 , fix.mandates_created
@@ -87,16 +87,13 @@ fix.organisation_id IS NULL
                       , CASE WHEN psm.PartnerShipSuccessManager IS NULL
                             THEN 'unallocated'
                         ELSE psm.PartnerShipSuccessManager
-                   END                                                                                             AS PartnerShipSuccessManager
-
-
-	            FROM
-              data_prep
-              LEFT JOIN
-              `gc-data-infrastructure-7e07.experimental_tables.App_Name_PSM_Lookup`  psm
-               ON
-               data_prep.signup_app_name = psm.app_name
-)
+                      END                                                AS PartnerShipSuccessManager
+	             FROM
+                     data_prep
+                     LEFT JOIN
+                     `gc-data-infrastructure-7e07.experimental_tables.App_Name_PSM_Lookup`  psm
+                     ON data_prep.signup_app_name = psm.app_name
+                    )
 
 SELECT
 DISTINCT
