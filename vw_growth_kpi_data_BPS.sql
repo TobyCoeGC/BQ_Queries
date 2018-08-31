@@ -10,12 +10,11 @@ WITH data_prep AS
   parent.* EXCEPT (mandates_created, scheme, mandateSchemeFix, active, inactive, activated, monthly_fee_active)
 , fix.mandates_created
 , fix.scheme
---, -1 AS mandateSchemeFix -- to prove that this has worked, only values of -1 and 0 will come out in the final results
 , CASE WHEN parent.DoubleCount_Fix=1 THEN parent.active                                       ELSE 0  END AS active
 , CASE WHEN parent.DoubleCount_Fix=1 THEN parent.inactive                                     ELSE 0  END AS inactive
 , CASE WHEN parent.DoubleCount_Fix=1 THEN parent.activated                                    ELSE 0  END AS activated
 , CASE WHEN parent.DoubleCount_Fix=1 THEN parent.monthly_fee_active                           ELSE 0  END AS monthly_fee_active
---, CASE WHEN parent.DoubleCount_Fix=1 THEN parent.paid_amount                                  ELSE 0  END AS paid_amount
+
 
 FROM
 `gc-data-infrastructure-7e07.experimental_tables.vw_growth_kpi_data_by_partner_prep` fix
