@@ -1,5 +1,3 @@
--- vw_growth_kpi_data_by_partner_prep.sql
-
 WITH activity_event_counts AS (
 
 
@@ -130,7 +128,7 @@ WITH activity_event_counts AS (
 	             --  , CASE WHEN revenue_prep.to_state = 'preactive' OR revenue_prep.to_state IS NULL THEN COALESCE(monthly_fee, 0) ELSE 0 END AS monthly_fee_preactive
 	               -- 90 days after activation metrics
 	               -- active mrr
-
+                
                  /*
 	              , CASE WHEN DATE_DIFF(daily_states.kpi_day, DATE(first_activated_at), day)+1 = 90 THEN
 	                SUM(CASE WHEN revenue_prep.to_state = 'active' THEN COALESCE(transaction_fee, 0) + COALESCE(monthly_fee, 0) ELSE 0 END)
@@ -306,17 +304,18 @@ WITH activity_event_counts AS (
 
 , final_mandate_prep AS (
                         SELECT
-                          pfp.* EXCEPT (active, inactive, activated, partner_name)
+                          pfp.* EXCEPT (active, inactive, activated, partner_name, paid_amount)
                         , COALESCE(pfp.monthly_fee_preactive,0)
                         + COALESCE(pfp.monthly_fee_active,0)
                         + COALESCE(pfp.monthly_fee_inactive,0)
                         + COALESCE(pfp.transaction_fee_preactive,0)
                         + COALESCE(pfp.transaction_fee_active,0)
-                        + COALESCE(pfp.transaction_fee_inactive,0)                   AS TotalGrossMRR
-                        , CASE WHEN DoubleCount_Fix=1 THEN pfp.active                                     ELSE 0 END            AS active
-                        , CASE WHEN DoubleCount_Fix=1 THEN pfp.inactive                                   ELSE 0 END            AS inactive
-                        , CASE WHEN DoubleCount_Fix=1 THEN pfp.activated                                  ELSE 0 END            AS activated
-                        , CASE WHEN Remap.DestVal IS NOT NULL THEN Remap.DestVal                          ELSE Partner_name END AS Partner_name -- AKA Partner Name RollUp as per SALES LeaderShip Dashboard
+                        + COALESCE(pfp.transaction_fee_inactive,0)                                            AS TotalGrossMRR
+                        , CASE WHEN DoubleCount_Fix=1         THEN pfp.active           ELSE 0 END            AS active
+                        , CASE WHEN DoubleCount_Fix=1         THEN pfp.inactive         ELSE 0 END            AS inactive
+                        , CASE WHEN DoubleCount_Fix=1         THEN pfp.activated        ELSE 0 END            AS activated
+                        , CASE WHEN DoubleCount_Fix=1         THEN pfp.paid_amount      ELSE 0  END           AS paid_amount
+                        , CASE WHEN Remap.DestVal IS NOT NULL THEN Remap.DestVal        ELSE Partner_name END AS Partner_name -- AKA Partner Name RollUp as per SALES LeaderShip Dashboard
                         FROM
                         pre_final_prep AS pfp
                           LEFT JOIN
