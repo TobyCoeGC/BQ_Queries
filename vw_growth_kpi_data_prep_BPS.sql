@@ -315,7 +315,7 @@ WITH activity_event_counts AS (
                         , CASE WHEN DoubleCount_Fix=1         THEN pfp.inactive         ELSE 0 END            AS inactive
                         , CASE WHEN DoubleCount_Fix=1         THEN pfp.activated        ELSE 0 END            AS activated
                         , CASE WHEN DoubleCount_Fix=1         THEN pfp.paid_amount      ELSE 0  END           AS paid_amount
-                        , CASE WHEN Remap.DestVal IS NOT NULL THEN Remap.DestVal        ELSE Partner_name END AS Partner_name -- AKA Partner Name RollUp as per SALES LeaderShip Dashboard
+                        , CASE WHEN Remap.DestVal IS NOT NULL THEN Remap.DestVal        ELSE Partner_name END AS Partner_name_rollup -- to allow a grouped 'partner_name rollup' dimension or partner name low level dimension
                         FROM
                         pre_final_prep AS pfp
                           LEFT JOIN
@@ -416,4 +416,4 @@ LEFT JOIN
 fix_90              f90
 
  USING (organisation_id, kpi_day)
- ;
+;
