@@ -1,0 +1,5 @@
+{
+    "sql": "queries/vw_kpi_revenue_prep_BPS.sql",
+    "gbq_view_name": "vw_kpi_revenue_prep_BPS",
+    "depends_on": ["vw_payment_actions_with_states_BPS", "vw_kpi_daily_states"]
+}

@@ -1,0 +1,4 @@
+{
+    "sql": "queries/vw_payment_actions_and_monthly_fees_prep_BPS.sql",
+    "gbq_view_name": "vw_payment_actions_and_monthly_fees_prep_BPS"
+}

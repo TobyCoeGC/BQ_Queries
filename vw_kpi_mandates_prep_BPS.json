@@ -1,0 +1,5 @@
+{
+    "sql": "queries/vw_kpi_mandates_prep_BPS.sql",
+    "gbq_view_name": "vw_kpi_mandates_prep_BPS",
+    "depends_on": ["vw_mandates", "vw_organisation_states"]
+}
