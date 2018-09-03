@@ -304,7 +304,7 @@ WITH activity_event_counts AS (
 
 , final_mandate_prep AS (
                         SELECT
-                          pfp.* EXCEPT (active, inactive, activated, partner_name, paid_amount)
+                          pfp.* EXCEPT (active, inactive, activated,  paid_amount)
                         , COALESCE(pfp.monthly_fee_preactive,0)
                         + COALESCE(pfp.monthly_fee_active,0)
                         + COALESCE(pfp.monthly_fee_inactive,0)
