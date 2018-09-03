@@ -154,7 +154,7 @@ WITH payment_filter AS (
         , CAST(NULL AS FLOAT64) AS refund_amount
         , CAST(NULL AS BOOLEAN) AS refund_paid_out
         , payments.scheme
-        , payments.amount   as paid_amount
+        , CASE WHEN to_state IN ('paid') THEN payments.amount ELSE 0 END  as paid_amount -- 03-09-2018
 
      FROM `gc-data-infrastructure-7e07.gc_paysvc_live_production.payment_actions`                   payment_actions
            JOIN payment_filter payments ON payments.id = payment_actions.payment_id
