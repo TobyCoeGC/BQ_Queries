@@ -43,7 +43,6 @@ WITH activity_event_counts AS (
 
 
 
-
 	        ), data_prep AS (
 
 
@@ -85,7 +84,7 @@ WITH activity_event_counts AS (
 	               , organisations.created_at
 	               , organisations.signup_app_id
 	               --, organisations.signup_app_name
-                 , CASE WHEN remap.destval IS NULL THEN organisations.signup_app_name ELSE remap.destval END AS signup_app_name
+                 , CASE WHEN remap.parent_app_name IS NULL THEN organisations.signup_app_name ELSE remap.parent_app_name END AS signup_app_name
 	               , COALESCE(salesforce.sales_channel, 'Self Serve') as sales_channel
 	               , CASE WHEN daily_states.kpi_day = date_trunc(daily_states.kpi_day, month) THEN TRUE ELSE FALSE END AS first_day_of_month
 	               , CASE WHEN daily_states.kpi_day = date_trunc(daily_states.kpi_day, quarter) THEN TRUE ELSE FALSE END AS first_day_of_quarter
@@ -197,8 +196,8 @@ WITH activity_event_counts AS (
 	                         USING (organisation_id, kpi_day, partner_id, scheme)
 	               LEFT JOIN `gc-data-infrastructure-7e07.materialized_views.vw_salesforce_growth_kpi_prep` salesforce
 	                         USING (organisation_id, kpi_day)
-                 LEFT JOIN  `gc-data-infrastructure-7e07.experimental_tables.App_Name_Remap_Lookup`  remap
-                           ON  organisations.signup_app_name= RTRIM(remap.SourceVal)
+                 LEFT JOIN  `gc-data-infrastructure-7e07.experimental_tables.segmentation_mapping_partners`  remap
+                           ON  organisations.signup_app_name= RTRIM(remap.child_App_name)
 	        )
 
 ,  pre_prep AS
@@ -304,7 +303,7 @@ WITH activity_event_counts AS (
 
 , final_mandate_prep AS (
                         SELECT
-                          pfp.* EXCEPT (active, inactive, activated,  paid_amount)
+                          pfp.* EXCEPT (active, inactive, activated, paid_amount)
                         , COALESCE(pfp.monthly_fee_preactive,0)
                         + COALESCE(pfp.monthly_fee_active,0)
                         + COALESCE(pfp.monthly_fee_inactive,0)
@@ -416,4 +415,4 @@ LEFT JOIN
 fix_90              f90
 
  USING (organisation_id, kpi_day)
-;
+ ;
