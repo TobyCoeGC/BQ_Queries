@@ -314,13 +314,13 @@ WITH activity_event_counts AS (
                         , CASE WHEN DoubleCount_Fix=1         THEN pfp.inactive         ELSE 0 END            AS inactive
                         , CASE WHEN DoubleCount_Fix=1         THEN pfp.activated        ELSE 0 END            AS activated
                         , CASE WHEN DoubleCount_Fix=1         THEN pfp.paid_amount      ELSE 0  END           AS paid_amount
-                        , CASE WHEN Remap.DestVal IS NOT NULL THEN Remap.DestVal        ELSE Partner_name END AS Partner_name_rollup -- to allow a grouped 'partner_name rollup' dimension or partner name low level dimension
+                        , CASE WHEN Remap.parent_app_name IS NOT NULL THEN Remap.parent_app_name        ELSE Partner_name END AS Partner_name_rollup -- to allow a grouped 'partner_name rollup' dimension or partner name low level dimension
                         FROM
                         pre_final_prep AS pfp
                           LEFT JOIN
-                        `gc-data-infrastructure-7e07.experimental_tables.App_Name_Remap_Lookup`  AS Remap
+                         `gc-data-infrastructure-7e07.experimental_tables.segmentation_mapping_partners`   AS Remap
                          ON
-                        pfp.Partner_name = RTRIM(Remap.SourceVal)
+                        pfp.Partner_name = RTRIM(Remap.child_app_name)
 
                       )
 
