@@ -86,7 +86,7 @@ WITH data_prep AS
                 SELECT
                   data_prep.*
 
-                , CASE WHEN psm.PartnerShipSuccessManager IS NULL
+                , CASE WHEN psm.PSM IS NULL
                             THEN 'unallocated'
                         ELSE psm.PSM
                    END                                                                      AS PartnerShipSuccessManager
