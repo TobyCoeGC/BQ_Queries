@@ -154,7 +154,14 @@ WITH payment_filter AS (
         , CAST(NULL AS FLOAT64) AS refund_amount
         , CAST(NULL AS BOOLEAN) AS refund_paid_out
         , payments.scheme
-        , CASE WHEN to_state IN ('paid') THEN payments.amount ELSE 0 END  as paid_amount -- 03-09-2018
+        , CASE WHEN to_state IN ('paid') THEN payments.amount ELSE 0 END                       as paid_amount
+        , CASE WHEN to_state IN ('charged_back') THEN payments.amount ELSE 0 END               as Chargeback_amount
+        , CASE WHEN to_state IN ('rejected') THEN payments.amount ELSE 0 END                   as rejected_amount
+        , CASE WHEN to_state IN ('failed') THEN payments.amount ELSE 0 END                     as failed_amount
+        , CASE WHEN to_state IN ('unconfirmed') THEN payments.amount ELSE 0 END                as unconfirmed_amount
+        , CASE WHEN to_state IN ('late_failure') THEN payments.amount ELSE 0 END               as latefailed_amount
+        , CASE WHEN to_state IN ('cancelled') THEN payments.amount ELSE 0 END                  as cancelled_amount
+        , CASE WHEN to_state IN ('customer_approval_denied') THEN payments.amount ELSE 0 END   as customer_approval_denied_amount
 
      FROM `gc-data-infrastructure-7e07.gc_paysvc_live_production.payment_actions`                   payment_actions
            JOIN payment_filter payments ON payments.id = payment_actions.payment_id
@@ -285,6 +292,13 @@ SELECT id
      , refund_paid_out
      , scheme
      , paid_amount
+     , chargeback_amount
+     , rejected_amount
+     , failed_amount
+     , unconfirmed_amount
+     , latefailed_amount
+     , cancelled_amount
+     , customer_approval_denied_amount
      , JSON_EXTRACT_SCALAR(metadata, "$['origin']") AS origin
      , JSON_EXTRACT_SCALAR(metadata, "$['cause']") AS cause
      , JSON_EXTRACT_SCALAR(metadata, "$['parent_event_id']") AS parent_event_id
@@ -331,7 +345,14 @@ SELECT id
      , refund_amount
      , refund_paid_out
      , scheme
-     , 0 as paid_amount -- seemingly we don't use this a contra figure, but based on first go at this on 30-08-2018 producing a slightly large 18.5Bn GBP (10ish Bn GBP ballpark is more realsitic)  we may need to ?? 31-08-2018
+     , 0 as paid_amount 
+     , 0 as chargeback_amount
+     , 0 as rejected_amount
+     , 0 as failed_amount
+     , 0 as unconfirmed_amount
+     , 0 as latefailed_amount
+     , 0 as cancelled_amount
+     , 0 as customer_approval_denied_amount
      , JSON_EXTRACT_SCALAR(metadata, "$['origin']") AS origin
      , JSON_EXTRACT_SCALAR(metadata, "$['cause']") AS cause
      , JSON_EXTRACT_SCALAR(metadata, "$['parent_event_id']") AS parent_event_id
@@ -377,7 +398,14 @@ SELECT id
      , refund_amount
      , refund_paid_out
      , scheme
-     , 0 as paid_amount
+     , 0 as paid_amount 
+     , 0 as chargeback_amount
+     , 0 as rejected_amount
+     , 0 as failed_amount
+     , 0 as unconfirmed_amount
+     , 0 as latefailed_amount
+     , 0 as cancelled_amount
+     , 0 as customer_approval_denied_amount
      , JSON_EXTRACT_SCALAR(metadata, "$['origin']") AS origin
      , JSON_EXTRACT_SCALAR(metadata, "$['cause']") AS cause
      , JSON_EXTRACT_SCALAR(metadata, "$['parent_event_id']") AS parent_event_id
