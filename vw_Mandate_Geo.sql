@@ -1,3 +1,4 @@
+-- Possibly should filter on payment_action.to_state =' paid' ??
 SELECT
         date(base.created_at)       AS KPI_Day
       , basegeo.geo                 AS MerchantGeo
