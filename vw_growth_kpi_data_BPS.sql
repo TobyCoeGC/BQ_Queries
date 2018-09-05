@@ -93,7 +93,12 @@ WITH data_prep AS
 	              FROM
                 data_prep
                 LEFT JOIN
-                `gc-data-infrastructure-7e07.experimental_tables.segmentation_mapping_partners`  psm
+                ( SELECT DISTINCT
+                     PSM
+                   , parent_app_name
+                   FROM
+                  `gc-data-infrastructure-7e07.experimental_tables.segmentation_mapping_partners`
+                 )  psm
                 ON
                 data_prep.signup_app_name = psm.parent_app_name
               )
