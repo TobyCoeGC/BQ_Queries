@@ -1,0 +1,5 @@
+{
+   "sql": "queries/vw_growth_kpi_data_prediv_BPS.sql",
+   "gbq_view_name": "vw_growth_kpi_data_prediv_BPS",
+   "depends_on": ["vw_growth_kpi_data_prep_BPS", "vw_activity_events", "vw_kpi_daily_states", "vw_kpi_payment_prep_BPS", "vw_kpi_revenue_prep_BPS", "vw_kpi_mandates_prep_BPS", "vw_organisations", "vw_salesforce_growth_kpi_prep"]
+}
