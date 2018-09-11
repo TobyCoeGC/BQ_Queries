@@ -17,11 +17,11 @@ WITH data_prep AS
 
 
                 FROM
-                `gc-data-infrastructure-7e07.experimental_tables.vw_growth_kpi_data_by_partner_prep` fix
+                `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_growth_kpi_data_by_partner_prep` fix
 
                 JOIN
 
-                `gc-data-infrastructure-7e07.experimental_tables.vw_growth_kpi_data_by_partner_prep` parent
+                `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_growth_kpi_data_by_partner_prep` parent
 
                 ON
                 fix.kpi_day = parent.kpi_day
@@ -54,7 +54,7 @@ WITH data_prep AS
 
                 FROM
 
-                `gc-data-infrastructure-7e07.experimental_tables.vw_growth_kpi_data_by_partner_prep` parent
+                `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_growth_kpi_data_by_partner_prep` parent
                 LEFT JOIN
                 (
                     SELECT
@@ -62,7 +62,7 @@ WITH data_prep AS
                     , organisation_id
                     FROM
 
-                    `gc-data-infrastructure-7e07.experimental_tables.vw_growth_kpi_data_by_partner_prep`
+                    `{{ params.gbq_project_id }}.{{ params.gbq_dataset_materialized_views }}.vw_growth_kpi_data_by_partner_prep`
                     WHERE
                     MandateSchemeFix = 1
                 ) fix
