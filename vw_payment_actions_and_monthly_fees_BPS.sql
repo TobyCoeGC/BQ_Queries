@@ -1,21 +1,36 @@
 -- vw_payment_actions_and_monthly_fees.sql
 
-WITH payment_actions_sorted AS (
+WITH payment_actions_sorted_key AS (
 
-    SELECT * EXCEPT(sort_key, refund_sort_key)
-         -- Combine refunds.sort_key with payment_actions.sort_key
-         -- We need to make sure the resulting sort key is unique
-         -- But also are correct chronologically
-         -- so we try to find the last sort_key before the refund, and then add +1 to the key
-         -- we use (refund_sort_key / 10) so 2 partial refunds don't get the same sort_key
-         , CASE WHEN to_state IN ('refund', 'partial_refund')
-                THEN CAST(MAX(sort_key) OVER (PARTITION BY payment_id ORDER BY created_at)
-                          + (refund_sort_key / 10) + 1 AS INT64)
-                ELSE sort_key
-           END AS sort_key
-      FROM `gc-data-infrastructure-7e07.experimental_tables.vw_payment_actions_and_monthly_fees_prep`
+                                    SELECT
+                                    * EXCEPT(sort_key, refund_sort_key)
+                                         -- Combine refunds.sort_key with payment_actions.sort_key
+                                         -- We need to make sure the resulting sort key is unique
+                                         -- But also are correct chronologically
+                                         -- so we try to find the last sort_key before the refund, and then add +1 to the key
+                                         -- we use (refund_sort_key / 10) so 2 partial refunds don't get the same sort_key
+                                         , CASE WHEN to_state IN ('refund', 'partial_refund')
+                                                THEN CAST(MAX(sort_key) OVER (PARTITION BY payment_id ORDER BY created_at)
+                                                          + (refund_sort_key / 10) + 1 AS INT64)
+                                                ELSE sort_key
+                                           END AS sort_key
+                                      FROM `gc-data-infrastructure-7e07.experimental_tables.vw_payment_actions_and_monthly_fees_prep`
+                                      WHERE source_table='payment_actions'
+                                   )
 
-), payment_actions_with_submission_count AS (
+
+, payment_actions_sorted  AS  (
+                                SELECT * EXCEPT( sort_key, refund_sort_key)
+                                      , sort_key
+                                      FROM `gc-data-infrastructure-7e07.experimental_tables.vw_payment_actions_and_monthly_fees_prep`
+                                      WHERE source_table!='payment_actions'
+                                      
+                                 UNION ALL
+                                      
+                                 SELECT * FROM payment_actions_sorted_key
+                              )
+
+ , payment_actions_with_submission_count AS (
 
     SELECT payment_actions_sorted.*
          -- each time a payment is retried, we can see this in the cause
